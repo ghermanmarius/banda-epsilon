@@ -1,0 +1,700 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#D6457A">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Crect width=%2764%27 height=%2764%27 rx=%2714%27 fill=%27%23D6457A%27/%3E%3Ctext x=%2732%27 y=%2746%27 font-size=%2740%27 font-family=%27serif%27 font-style=%27italic%27 text-anchor=%27middle%27 fill=%27white%27%3E%CE%B5%3C/text%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Banda ε</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Banda ε: verifică limita unui șir cu o bandă transparentă. Activitatea lui Roh (2008), pe telefon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fira+Sans:ital,wght@0,400;0,500;1,400;1,500&display=swap">
+<style>
+/* Layout: one phone-width column (max 520px), screen content above a fixed bottom tab bar. Palette from the deck (ink/plum/rose band, teal = inside, red = outside). */
+:root {
+  --bg: #FBF9FC; --surface: #FFFFFF; --soft: #F5F1F6; --line: #E4DCE7;
+  --ink: #2B2233; --plum: #4A3A54; --muted: #7A6F80;
+  --rose: #D6457A; --band: #F9D3E1; --band-edge: #EDB0C6;
+  --teal: #1A6E5E; --teal-soft: #E6F2EE; --on-teal: #FFFFFF;
+  --red: #C23B35; --red-soft: #FAE8E7;
+  --gold: #C98A10;
+  --shadow: 0 1px 2px rgba(43,34,51,.06), 0 6px 20px rgba(43,34,51,.06);
+  --f-ui: "Outfit", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-math: "Fira Sans", "Fira Math", "Cambria Math", "Times New Roman", serif;
+  --r: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16111A; --surface: #211A26; --soft: #2A2130; --line: #3A2F42;
+    --ink: #F2ECF5; --plum: #DCD0E3; --muted: #A99DB1;
+    --rose: #EE6E9C; --band: #4E2539; --band-edge: #7A3858;
+    --teal: #45B89E; --teal-soft: #163029; --on-teal: #0C1F1A;
+    --red: #F2746D; --red-soft: #3B1F22; --gold: #E2A93A;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #16111A; --surface: #211A26; --soft: #2A2130; --line: #3A2F42;
+  --ink: #F2ECF5; --plum: #DCD0E3; --muted: #A99DB1;
+  --rose: #EE6E9C; --band: #4E2539; --band-edge: #7A3858;
+  --teal: #45B89E; --teal-soft: #163029; --on-teal: #0C1F1A;
+  --red: #F2746D; --red-soft: #3B1F22; --gold: #E2A93A;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 6px 20px rgba(0,0,0,.25);
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { min-height: 100%; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-ui); font-size: 16px; line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--rose); outline-offset: 2px; border-radius: 6px; }
+i.v, .math i { font-family: var(--f-math); font-style: italic; }
+
+.app {
+  max-width: 520px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 20px calc(96px + env(safe-area-inset-bottom, 0px));
+  display: flex; flex-direction: column; gap: 18px;
+}
+h1, h2, h3 { margin: 0; text-wrap: balance; line-height: 1.12; }
+h1 { font-size: 2.1rem; font-weight: 800; letter-spacing: -.02em; }
+h2 { font-size: 1.55rem; font-weight: 700; letter-spacing: -.01em; }
+h3 { font-size: 1.08rem; font-weight: 600; }
+p { margin: 0; }
+.muted { color: var(--muted); }
+.small { font-size: .88rem; }
+.eyebrow { font-size: .78rem; font-weight: 600; letter-spacing: .09em; text-transform: uppercase; color: var(--teal); }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* ---------- start ---------- */
+.hero { display: flex; flex-direction: column; gap: 10px; padding-top: 4px; }
+.hero h1 .eps { color: var(--rose); font-family: var(--f-math); font-style: italic; font-weight: 500; }
+.hero-strip { border-radius: var(--r); background: var(--soft); overflow: hidden; }
+.hero-strip svg { display: block; width: 100%; height: auto; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; padding: 0; list-style: none; }
+.steps li { background: var(--soft); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.steps b { font-size: .92rem; }
+.steps span { font-size: .8rem; color: var(--muted); line-height: 1.3; }
+.steps .n { font-size: .72rem; font-weight: 700; color: var(--rose); }
+.seq-list { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.seq-card {
+  text-align: left; border: 1px solid var(--line); background: var(--surface);
+  border-radius: var(--r); padding: 12px; display: flex; flex-direction: column; gap: 6px;
+  box-shadow: var(--shadow); min-width: 0; transition: transform .15s ease, border-color .15s;
+}
+.seq-card:hover { border-color: var(--rose); transform: translateY(-1px); }
+.seq-card .top { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.seq-card .roman { font-weight: 800; font-size: 1.25rem; }
+.seq-card .prog { font-size: .74rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.seq-card .prog.done { color: var(--teal); font-weight: 600; }
+.seq-card svg { width: 100%; height: auto; display: block; }
+.seq-card .fx { font-size: .86rem; color: var(--plum); min-height: 2.4em; display: flex; align-items: center; overflow-x: auto; }
+
+/* ---------- math ---------- */
+.math { font-family: var(--f-math); white-space: nowrap; }
+.frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; font-size: .82em; line-height: 1.15; margin: 0 .1em; }
+.frac > span:first-child { border-bottom: 1.4px solid currentColor; padding: 0 .15em; }
+.cases { display: inline-flex; align-items: center; vertical-align: middle; }
+.cases .brace { font-size: 2.3em; font-weight: 300; line-height: 1; margin-right: .08em; font-family: var(--f-ui); }
+.cases .rows { display: flex; flex-direction: column; gap: 2px; font-size: .92em; }
+sup, sub { font-size: .7em; }
+
+/* ---------- sequence screen ---------- */
+.seq-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.seq-head .fx { font-size: 1.2rem; color: var(--plum); margin-top: 6px; overflow-x: auto; max-width: 100%; }
+.navbtns { display: flex; gap: 6px; flex-shrink: 0; }
+.iconbtn {
+  width: 40px; height: 40px; border-radius: 12px; border: 1px solid var(--line);
+  background: var(--surface); display: grid; place-items: center; color: var(--plum);
+}
+.iconbtn:disabled { opacity: .35; cursor: default; }
+.iconbtn svg { width: 18px; height: 18px; }
+.plot-wrap { background: var(--soft); border-radius: 22px; padding: 8px 6px 4px; position: relative; }
+.plot { display: block; width: 100%; height: auto; touch-action: none; user-select: none; -webkit-user-select: none; cursor: grab; }
+.plot.dragging { cursor: grabbing; }
+.plot-cap { display: flex; justify-content: space-between; gap: 8px; padding: 2px 10px 6px; font-size: .78rem; color: var(--muted); flex-wrap: wrap; }
+.centers { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: .88rem; color: var(--muted); }
+.chip {
+  border: 1px solid var(--line); background: var(--surface); border-radius: 999px;
+  padding: 5px 12px; font-weight: 600; font-size: .9rem; color: var(--plum); font-variant-numeric: tabular-nums;
+}
+.chip[aria-pressed="true"] { background: var(--rose); border-color: var(--rose); color: #fff; }
+.label { font-size: .8rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--teal); }
+.seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.seg button {
+  border: 2px solid var(--line); background: var(--surface); border-radius: 16px;
+  padding: 10px 4px 8px; font-weight: 600; font-size: 1.15rem; display: flex; flex-direction: column; align-items: center; gap: 0;
+}
+.seg button small { font-size: .74rem; font-weight: 500; color: var(--muted); font-variant-numeric: tabular-nums; }
+.seg button[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+.seg button[aria-pressed="true"] small { color: var(--on-teal); opacity: .85; }
+.seg .dot { width: 6px; height: 6px; border-radius: 50%; background: transparent; margin-top: 3px; }
+.seg .dot.on { background: var(--rose); }
+.seg button[aria-pressed="true"] .dot.on { background: var(--on-teal); }
+.counters { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.counter { border-radius: 18px; padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.counter.in { background: var(--teal-soft); color: var(--teal); }
+.counter.out { background: var(--red-soft); color: var(--red); }
+.counter h3 { font-size: 1.02rem; font-weight: 600; }
+.counter .big { font-size: 2.5rem; font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
+.counter .big.inf { font-size: 3rem; font-weight: 600; line-height: .95; }
+.counter .what { font-size: .74rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+.counter .desc { font-size: .86rem; overflow-wrap: anywhere; }
+.btn {
+  border: 0; border-radius: 18px; padding: 15px 18px; font-weight: 600; font-size: 1.1rem;
+  background: var(--teal); color: var(--on-teal); width: 100%;
+}
+.btn.ghost { background: var(--surface); color: var(--plum); border: 1.5px solid var(--line); }
+.btn.small { width: auto; padding: 9px 14px; font-size: .92rem; border-radius: 12px; }
+.btn:disabled { opacity: .45; cursor: default; }
+.hint { display: flex; gap: 8px; align-items: center; font-size: .84rem; color: var(--muted); }
+.hint svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* ---------- worksheet ---------- */
+.ws { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 12px; box-shadow: var(--shadow); }
+.ws-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+.ws-head .fx { font-size: .95rem; color: var(--plum); overflow-x: auto; }
+.tbl-wrap { overflow-x: auto; margin: 0 -4px; }
+table { border-collapse: collapse; width: 100%; font-size: .86rem; font-variant-numeric: tabular-nums; }
+th, td { padding: 5px 4px; text-align: center; border-bottom: 1px solid var(--line); white-space: nowrap; }
+thead th { font-weight: 600; color: var(--muted); font-size: .76rem; }
+thead tr:first-child th { color: var(--plum); font-size: .82rem; }
+td.L { font-weight: 700; color: var(--rose); text-align: left; padding-left: 6px; }
+td .inf { font-size: 1.15em; }
+td.i { color: var(--teal); } td.o { color: var(--red); }
+td.empty { color: var(--line); }
+.ans { display: grid; grid-template-columns: auto 1fr; gap: 8px 10px; align-items: center; }
+.ans .q { font-size: .92rem; font-weight: 500; white-space: nowrap; }
+.ans .opts { display: flex; gap: 6px; flex-wrap: wrap; }
+.ans .chip[aria-pressed="true"] { background: var(--plum); border-color: var(--plum); color: var(--bg); }
+.check { font-size: .84rem; font-weight: 600; }
+.check.ok { color: var(--teal); } .check.no { color: var(--red); }
+.empty-ws { font-size: .88rem; color: var(--muted); background: var(--soft); border-radius: 12px; padding: 10px 12px; }
+
+/* ---------- vote ---------- */
+.defs { display: grid; gap: 10px; }
+.def {
+  text-align: left; border: 2px solid var(--line); background: var(--surface); border-radius: var(--r);
+  padding: 14px; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: start;
+}
+.def .letter { grid-row: span 2; width: 44px; height: 44px; border-radius: 12px; background: var(--soft); color: var(--plum); display: grid; place-items: center; font-weight: 800; font-size: 1.35rem; }
+.def .t { font-weight: 600; }
+.def .d { font-size: .93rem; color: var(--plum); }
+.def[aria-pressed="true"] { border-color: var(--plum); }
+.def[aria-pressed="true"] .letter { background: var(--plum); color: var(--bg); }
+textarea { width: 100%; min-height: 84px; border: 1.5px solid var(--line); border-radius: 14px; background: var(--surface); padding: 10px 12px; resize: vertical; }
+.qs { display: grid; gap: 8px; }
+.qcard { background: var(--soft); border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; font-size: .93rem; }
+.qcard .n { font-weight: 800; color: var(--rose); }
+.verdict { border-radius: var(--r); padding: 16px; background: var(--teal-soft); color: var(--ink); display: flex; flex-direction: column; gap: 10px; }
+.verdict h3 { color: var(--teal); font-size: 1.2rem; }
+.verdict .bad { color: var(--red); font-weight: 600; }
+.nline { display: flex; gap: 4px; flex-wrap: wrap; align-items: center; }
+.nline span { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; font-size: .72rem; font-weight: 700; color: #fff; }
+.nline .o { background: var(--red); } .nline .i { background: var(--teal); color: var(--on-teal); } .nline .m { background: var(--muted); }
+.voted { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--soft); border-radius: 14px; padding: 12px 14px; flex-wrap: wrap; }
+
+/* ---------- class ---------- */
+.tally { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.tcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px; display: flex; flex-direction: column; gap: 8px; align-items: center; box-shadow: var(--shadow); }
+.tcard .k { font-weight: 800; font-size: 1.1rem; color: var(--plum); }
+.tcard .num { font-size: 3rem; font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1; }
+.tcard .pm { display: flex; gap: 8px; }
+.tcard .pm button { width: 52px; height: 44px; border-radius: 12px; border: 1.5px solid var(--line); background: var(--soft); font-size: 1.4rem; font-weight: 600; color: var(--plum); }
+.tcard .pm button.plus { background: var(--plum); border-color: var(--plum); color: var(--bg); }
+.bar { height: 18px; border-radius: 999px; background: var(--soft); overflow: hidden; display: flex; }
+.bar .a { background: var(--rose); transition: width .3s ease; }
+.bar .b { background: var(--teal); transition: width .3s ease; }
+.legend { display: flex; justify-content: space-between; font-size: .86rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.cmp td, .cmp th { padding: 7px 5px; }
+.cmp .hl { color: var(--rose); font-weight: 700; }
+.confirm { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: .9rem; }
+
+/* ---------- tab bar ---------- */
+.tabs {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 5;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: max(8px, env(safe-area-inset-left, 0px));
+  padding-right: max(8px, env(safe-area-inset-right, 0px));
+}
+.tabs nav { max-width: 520px; margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); }
+.tabs a { text-decoration: none; color: var(--muted); display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 9px 0 8px; font-size: .76rem; font-weight: 500; }
+.tabs a svg { width: 22px; height: 22px; }
+.tabs a[aria-current="page"] { color: var(--rose); font-weight: 700; }
+.toast {
+  position: fixed; left: 50%; bottom: calc(80px + env(safe-area-inset-bottom, 0px)); transform: translate(-50%, 10px);
+  background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: .92rem; font-weight: 500;
+  opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 6; max-width: calc(100% - 32px); text-align: center;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+footer { font-size: .78rem; color: var(--muted); text-align: center; padding-top: 6px; }
+@media (max-width: 380px) {
+  .steps { grid-template-columns: 1fr; }
+  .counter .big { font-size: 2.1rem; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main class="app" id="app" aria-live="polite"></main>
+<div class="tabs"><nav id="tabs" aria-label="Secțiuni"></nav></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(() => {
+"use strict";
+
+/* ================= data ================= */
+const NMAX = 20000, HALF = NMAX / 2;
+const BANDS = [ { k: "5", label: "5 cm", f: 0.16 }, { k: "3", label: "3 cm", f: 0.096 }, { k: "1", label: "1 cm", f: 0.032 } ];
+const ONES = new Uint8Array(NMAX + 1);
+for (let k = 1; ; k++) { const p = k * (k + 3) / 2; if (p > NMAX) break; ONES[p] = 1; }
+
+const frac = (a, b) => `<span class="frac"><span>${a}</span><span>${b}</span></span>`;
+const an = `<i>a</i><sub><i>n</i></sub>`;
+const SEQ = [
+  { id: 1, roman: "I", lo: -0.2, hi: 1.1, ticks: [0, 1], centers: [0], show: 24, step: 0.05,
+    fx: `${an} = ${frac("1", "<i>n</i>")}`, f: n => 1 / n,
+    opts: ["0", "1", "nu există"], A: "0", B: "0" },
+  { id: 2, roman: "II", lo: -3.4, hi: 3.4, ticks: [-2, 0, 2], centers: [-2, 2], show: 24, step: 0.1,
+    fx: `${an} = (−1)<sup><i>n</i></sup> ${frac("2<i>n</i>+1", "<i>n</i>")}`, f: n => (n % 2 ? -1 : 1) * (2 * n + 1) / n,
+    opts: ["2", "−2", "2 și −2", "0", "nu există"], A: "2 și −2", B: "nu există" },
+  { id: 3, roman: "III", lo: -0.45, hi: 1.1, ticks: [0, 1], centers: [0], show: 24, step: 0.05,
+    fx: `${an} = <span class="cases"><span class="brace">{</span><span class="rows"><span>0, &nbsp;<i>n</i> par</span><span>${frac("(−1)<sup>(<i>n</i>−1)/2</sup>", "<i>n</i>")}, &nbsp;<i>n</i> impar</span></span></span>`,
+    f: n => n % 2 === 0 ? 0 : (((n - 1) / 2) % 2 === 0 ? 1 : -1) / n,
+    opts: ["0", "1", "nu există"], A: "0", B: "0" },
+  { id: 4, roman: "IV", lo: -0.3, hi: 1.4, ticks: [0, 1], centers: [0, 1], show: 30, step: 0.05,
+    fx: `0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, …`, f: n => ONES[n],
+    opts: ["0", "1", "0 și 1", "nu există"], A: "0 și 1", B: "nu există" },
+];
+SEQ.forEach(s => { s.v = new Float64Array(NMAX + 1); for (let n = 1; n <= NMAX; n++) s.v[n] = s.f(n); s.range = s.hi - s.lo; });
+const eps = (s, b) => +(s.range * BANDS.find(x => x.k === b).f).toFixed(2);
+const fmt = v => { v = Math.round(v * 100) / 100; if (Math.abs(v) < 1e-9) v = 0; return String(v).replace(".", ",").replace("-", "−"); };
+const snap = (s, y) => +(Math.round(y / s.step) * s.step).toFixed(4);
+const seqById = id => SEQ.find(s => s.id === id);
+
+/* ================= state ================= */
+const KEY = "banda-epsilon-v1";
+const fresh = () => ({
+  L: { 1: 0, 2: 2, 3: 0, 4: 0 }, band: { 1: "5", 2: "5", 3: "5", 4: "5" },
+  notes: {}, answers: { 1: {}, 2: {}, 3: {}, 4: {} }, check: false,
+  vote: null, why: "", verdict: false, tally: { A: 0, B: 0 }, cmp: false,
+});
+let S = fresh();
+try { const raw = localStorage.getItem(KEY); if (raw) S = Object.assign(fresh(), JSON.parse(raw)); } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+
+/* ================= analysis ================= */
+function analyze(s, L, e) {
+  const mk = () => ({ c: 0, last: 0, first: [], tail: [] });
+  const r = { in: mk(), out: mk() };
+  for (let n = 1; n <= NMAX; n++) {
+    const o = Math.abs(s.v[n] - L) < e ? r.in : r.out;
+    o.c++; o.last = n; if (o.first.length < 5) o.first.push(n); if (n > HALF) o.tail.push(n);
+  }
+  r.in.inf = r.in.tail.length > 0; r.out.inf = r.out.tail.length > 0;
+  return r;
+}
+function describe(x, other, s) {
+  if (!x.inf) {
+    if (x.c === 0) return "niciun termen";
+    if (x.c <= 4) return "doar n = " + x.first.join(", ");
+    return `ultimul: n = ${x.last}`;
+  }
+  if (!other.inf) return other.c === 0 ? "toți termenii" : `toți, de la n = ${other.last + 1}`;
+  const t = x.tail;
+  if (t.every(n => n % 2 === 0)) return "termenii pari";
+  if (t.every(n => n % 2 === 1)) return "termenii impari";
+  const v0 = s.v[t[0]];
+  if (t.every(n => s.v[n] === v0)) return `termenii egali cu ${fmt(v0)}`;
+  return t.length < HALF * 0.2 ? "tot mai rari, dar fără sfârșit" : "o infinitate de termeni";
+}
+
+/* ================= helpers ================= */
+const $ = sel => document.querySelector(sel);
+const app = $("#app");
+const NS = "http://www.w3.org/2000/svg";
+const icon = {
+  prev: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>',
+  next: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>',
+  seq: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="2.5" y="9" width="19" height="6" rx="1.5" fill="currentColor" opacity=".18" stroke="none"/><path d="M2.5 12h19"/><circle cx="5" cy="5" r="1.6" fill="currentColor"/><circle cx="9.5" cy="10" r="1.6" fill="currentColor"/><circle cx="14" cy="13" r="1.6" fill="currentColor"/><circle cx="18.5" cy="12" r="1.6" fill="currentColor"/></svg>',
+  ws: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M9 11h7M9 15h7M9 7h3"/></svg>',
+  vote: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13l5 5L20 7"/></svg>',
+  cls: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>',
+  hand: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M7 8l5-5 5 5M7 16l5 5 5-5"/></svg>',
+};
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 1900); }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const notesFor = id => Object.values(S.notes).filter(n => n.seq === id);
+
+/* mini plot (start cards + hero) */
+function miniPlot(s, w = 160, h = 64, opts = {}) {
+  const pad = 6, xs = n => pad + (n - 0.5) * (w - 2 * pad) / s.show, ys = y => h - pad - (y - s.lo) * (h - 2 * pad) / s.range;
+  let out = `<svg viewBox="0 0 ${w} ${h}" aria-hidden="true">`;
+  if (opts.band != null) {
+    const e = opts.eps;
+    out += `<rect x="0" y="${ys(opts.band + e)}" width="${w}" height="${ys(opts.band - e) - ys(opts.band + e)}" fill="var(--band)"/>`;
+    out += `<line x1="0" x2="${w}" y1="${ys(opts.band)}" y2="${ys(opts.band)}" stroke="var(--rose)" stroke-width="2"/>`;
+  } else if (s.lo < 0) {
+    out += `<line x1="${pad}" x2="${w - pad}" y1="${ys(0)}" y2="${ys(0)}" stroke="var(--line)" stroke-width="1"/>`;
+  }
+  for (let n = 1; n <= s.show; n++) {
+    const inside = opts.band != null && Math.abs(s.v[n] - opts.band) < opts.eps;
+    const col = opts.band == null ? "var(--plum)" : inside ? "var(--teal)" : "var(--red)";
+    out += opts.band != null && !inside
+      ? `<circle cx="${xs(n)}" cy="${ys(s.v[n])}" r="${opts.r || 2.2}" fill="var(--soft)" stroke="${col}" stroke-width="1.4"/>`
+      : `<circle cx="${xs(n)}" cy="${ys(s.v[n])}" r="${opts.r || 2.2}" fill="${col}"/>`;
+  }
+  return out + "</svg>";
+}
+
+/* ================= tabs + routing ================= */
+const ROUTES = ["start", "sir-1", "sir-2", "sir-3", "sir-4", "fisa", "vot", "clasa"];
+function route() { const h = location.hash.slice(1); return ROUTES.includes(h) ? h : "start"; }
+function go(r) { if (location.hash.slice(1) === r) render(); else location.hash = r; }
+function renderTabs(r) {
+  const tab = r.startsWith("sir") ? "start" : r;
+  const items = [["start", "Șiruri", icon.seq], ["fisa", "Fișa", icon.ws], ["vot", "Vot", icon.vote], ["clasa", "Clasa", icon.cls]];
+  $("#tabs").innerHTML = items.map(([k, t, i]) => `<a href="#${k}" ${k === tab ? 'aria-current="page"' : ""}>${i}<span>${t}</span></a>`).join("");
+}
+function render() {
+  const r = route();
+  renderTabs(r);
+  if (r === "start") renderStart();
+  else if (r.startsWith("sir-")) renderSeq(+r.slice(4));
+  else if (r === "fisa") renderSheet();
+  else if (r === "vot") renderVote();
+  else renderClass();
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", render);
+
+/* ================= screen: start ================= */
+function renderStart() {
+  const s1 = seqById(1);
+  app.innerHTML = `
+  <section class="hero">
+    <span class="eyebrow">Limita unui șir · clasa a XI-a</span>
+    <h1>Banda <span class="eps">ε</span></h1>
+    <p class="muted">Pune o bandă transparentă peste graficul unui șir și numără punctele care rămân afară. Este experimentul lui Roh (2008), pe telefonul tău.</p>
+    <div class="hero-strip">${miniPlot(s1, 480, 120, { band: 0, eps: 0.12, r: 3.4 })}</div>
+  </section>
+  <ol class="steps">
+    <li><span class="n">PASUL 1</span><b>Punem banda</b><span>cu linia roșie pe numărul bănuit ca limită</span></li>
+    <li><span class="n">PASUL 2</span><b>Numărăm</b><span>punctele dinăuntru și de afară, cu benzi tot mai înguste</span></li>
+    <li><span class="n">PASUL 3</span><b>Alegem</b><span>între definițiile A și B</span></li>
+  </ol>
+  <div class="stack">
+    <h2>Fișa de lucru: 4 șiruri</h2>
+    <div class="seq-list">
+      ${SEQ.map(s => {
+        const done = new Set(notesFor(s.id).map(n => n.b)).size;
+        const ans = S.answers[s.id];
+        const full = done === 3 && ans.A && ans.B;
+        return `<button class="seq-card" data-go="sir-${s.id}">
+          <span class="top"><span class="roman">Șirul ${s.roman}</span><span class="prog ${full ? "done" : ""}">${full ? "✓ completat" : done + "/3 benzi"}</span></span>
+          ${miniPlot(s)}
+          <span class="fx math">${s.fx}</span>
+        </button>`;
+      }).join("")}
+    </div>
+  </div>
+  <footer>Prototip realizat de Echipa 4 · Introducere în cercetarea didactică · după Roh (2008)</footer>`;
+}
+
+/* ================= screen: sequence ================= */
+let cur = null; // {s, svg refs}
+function renderSeq(id) {
+  const s = seqById(id), i = SEQ.indexOf(s);
+  const b = S.band[id];
+  app.innerHTML = `
+  <div class="seq-head">
+    <div style="min-width:0">
+      <h2>Șirul ${s.roman}</h2>
+      <div class="fx math">${s.fx}</div>
+    </div>
+    <div class="navbtns">
+      <button class="iconbtn" data-go="sir-${SEQ[i - 1]?.id}" ${i === 0 ? "disabled" : ""} aria-label="Șirul anterior">${icon.prev}</button>
+      <button class="iconbtn" data-go="sir-${SEQ[i + 1]?.id}" ${i === SEQ.length - 1 ? "disabled" : ""} aria-label="Șirul următor">${icon.next}</button>
+    </div>
+  </div>
+  <div class="plot-wrap">
+    <svg class="plot" id="plot" viewBox="0 0 360 270" tabindex="0" role="slider" aria-label="Poziția benzii (linia roșie)" aria-valuemin="${s.lo}" aria-valuemax="${s.hi}"></svg>
+    <div class="plot-cap"><span>primii ${s.show} termeni</span><span>contorul ține cont de <b>toți</b> termenii</span></div>
+  </div>
+  <div class="hint">${icon.hand}<span>Trage banda în sus sau în jos (sau folosește săgețile).</span></div>
+  <div class="centers">Puncte centrale din fișă:
+    ${s.centers.map(c => `<button class="chip" data-center="${c}">L = ${fmt(c)}</button>`).join("")}
+  </div>
+  <div class="stack" style="gap:8px">
+    <span class="label">Lățimea benzii</span>
+    <div class="seg" id="seg">
+      ${BANDS.map(x => `<button data-band="${x.k}" aria-pressed="${x.k === b}">${x.label}<small>ε = ${fmt(eps(s, x.k))}</small><span class="dot" data-dot="${x.k}"></span></button>`).join("")}
+    </div>
+  </div>
+  <div class="counters" aria-live="polite">
+    <div class="counter in"><h3>În bandă</h3><div class="big" id="inBig"></div><div class="what" id="inWhat"></div><div class="desc" id="inDesc"></div></div>
+    <div class="counter out"><h3>Afară</h3><div class="big" id="outBig"></div><div class="what" id="outWhat"></div><div class="desc" id="outDesc"></div></div>
+  </div>
+  <button class="btn" id="note">Notează în fișă</button>`;
+  cur = { s };
+  buildPlot(s);
+  updateSeq();
+
+  const svg = $("#plot");
+  let drag = null;
+  const yData = ev => {
+    const pt = svg.createSVGPoint(); pt.x = ev.clientX; pt.y = ev.clientY;
+    const p = pt.matrixTransform(svg.getScreenCTM().inverse());
+    return cur.yInv(p.y);
+  };
+  svg.addEventListener("pointerdown", ev => {
+    const y = yData(ev), L = S.L[id], e = eps(s, S.band[id]);
+    drag = { off: Math.abs(y - L) <= e ? L - y : 0 };
+    if (!drag.off) setL(y);
+    svg.setPointerCapture(ev.pointerId); svg.classList.add("dragging");
+  });
+  svg.addEventListener("pointermove", ev => { if (drag) setL(yData(ev) + drag.off); });
+  const end = () => { if (drag) { drag = null; svg.classList.remove("dragging"); save(); } };
+  svg.addEventListener("pointerup", end); svg.addEventListener("pointercancel", end);
+  svg.addEventListener("keydown", ev => {
+    const d = { ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1, PageUp: 5, PageDown: -5 }[ev.key];
+    if (d) { ev.preventDefault(); setL(S.L[id] + d * s.step); save(); }
+  });
+  function setL(y) {
+    const v = Math.min(s.hi, Math.max(s.lo, snap(s, y)));
+    if (v !== S.L[id]) { S.L[id] = v; updateSeq(); }
+  }
+}
+
+function buildPlot(s) {
+  const svg = $("#plot"), W = 360, H = 270, ml = 40, mr = 14, mt = 14, mb = 18;
+  const xs = n => ml + 6 + (n - 0.5) * (W - ml - mr - 18) / s.show;
+  const ys = y => mt + (s.hi - y) * (H - mt - mb) / s.range;
+  cur.xs = xs; cur.ys = ys; cur.yInv = py => s.hi - (py - mt) * s.range / (H - mt - mb);
+  let g = "";
+  // guides at worksheet centers
+  s.centers.forEach(c => { g += `<line x1="${ml}" x2="${W - mr}" y1="${ys(c)}" y2="${ys(c)}" stroke="var(--rose)" stroke-opacity=".45" stroke-dasharray="4 5" stroke-width="1"/>`; });
+  // band
+  g += `<g id="band"><rect id="bandRect" x="${ml}" width="${W - ml - mr}" fill="var(--band)" opacity=".85"/>
+        <line id="bandTop" x1="${ml}" x2="${W - mr}" stroke="var(--band-edge)" stroke-width="1"/>
+        <line id="bandBot" x1="${ml}" x2="${W - mr}" stroke="var(--band-edge)" stroke-width="1"/>
+        <line id="bandMid" x1="${ml}" x2="${W - mr}" stroke="var(--rose)" stroke-width="3"/>
+        <g id="grip"><rect x="${ml + 4}" width="22" height="16" rx="5" fill="var(--rose)"/>
+          <path d="M${ml + 9} 0h12M${ml + 9} 0h12" stroke="#fff"/></g></g>`;
+  // axes
+  const y0 = s.lo < 0 && s.hi > 0 ? ys(0) : H - mb;
+  g += `<line x1="${ml}" x2="${ml}" y1="${mt - 6}" y2="${H - mb + 4}" stroke="var(--muted)" stroke-width="1.2"/>
+        <path d="M${ml - 4} ${mt - 2} L${ml} ${mt - 10} L${ml + 4} ${mt - 2}" fill="none" stroke="var(--muted)" stroke-width="1.2"/>
+        <line x1="${ml}" x2="${W - mr + 2}" y1="${y0}" y2="${y0}" stroke="var(--muted)" stroke-width="1.2"/>
+        <path d="M${W - mr - 6} ${y0 - 4} L${W - mr + 2} ${y0} L${W - mr - 6} ${y0 + 4}" fill="none" stroke="var(--muted)" stroke-width="1.2"/>
+        <text x="${W - mr - 2}" y="${y0 + 16}" font-family="var(--f-math)" font-style="italic" font-size="13" fill="var(--muted)" text-anchor="end">n</text>`;
+  s.ticks.forEach(t => { g += `<line x1="${ml - 4}" x2="${ml}" y1="${ys(t)}" y2="${ys(t)}" stroke="var(--muted)"/><text x="${ml - 8}" y="${ys(t) + 4.5}" font-size="13" font-weight="500" fill="var(--muted)" text-anchor="end" font-family="var(--f-ui)">${fmt(t)}</text>`; });
+  // points
+  g += `<g id="pts">`;
+  for (let n = 1; n <= s.show; n++) g += `<circle data-n="${n}" cx="${xs(n)}" cy="${ys(s.v[n])}" r="5"/>`;
+  g += `</g><text x="${xs(s.show) + 9}" y="${y0 - 6}" font-size="13" fill="var(--muted)">…</text>`;
+  // L pill
+  g += `<g id="pill"><rect id="pillR" height="24" rx="12" fill="var(--rose)"/><text id="pillT" font-size="14" font-weight="700" fill="#fff" font-family="var(--f-ui)" text-anchor="middle"></text></g>`;
+  svg.innerHTML = g;
+  cur.pts = [...svg.querySelectorAll("#pts circle")];
+}
+
+function updateSeq() {
+  const s = cur.s, id = s.id, L = S.L[id], b = S.band[id], e = eps(s, b), ys = cur.ys;
+  const top = ys(L + e), bot = ys(L - e), mid = ys(L);
+  const set = (el, a) => { for (const k in a) el.setAttribute(k, a[k]); };
+  set($("#bandRect"), { y: top, height: bot - top });
+  set($("#bandTop"), { y1: top, y2: top }); set($("#bandBot"), { y1: bot, y2: bot }); set($("#bandMid"), { y1: mid, y2: mid });
+  $("#grip").setAttribute("transform", `translate(0 ${mid - 8})`);
+  $("#grip").innerHTML = `<rect x="44" width="22" height="16" rx="5" fill="var(--rose)"/><path d="M49 5.5h12M49 10.5h12" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>`;
+  const label = `L = ${fmt(L)}`, pw = 18 + label.length * 8.2, px = 360 - 14 - pw;
+  set($("#pillR"), { x: px, y: mid - 12, width: pw }); set($("#pillT"), { x: px + pw / 2, y: mid + 5 }); $("#pillT").textContent = label;
+  cur.pts.forEach((c, k) => {
+    const inside = Math.abs(s.v[k + 1] - L) < e;
+    c.setAttribute("fill", inside ? "var(--teal)" : "var(--soft)");
+    c.setAttribute("stroke", inside ? "var(--teal)" : "var(--red)");
+    c.setAttribute("stroke-width", inside ? "0" : "2.2");
+  });
+  $("#plot").setAttribute("aria-valuenow", L); $("#plot").setAttribute("aria-valuetext", label);
+  const r = analyze(s, L, e);
+  cur.r = r;
+  const big = (el, x) => { el.textContent = x.inf ? "∞" : x.c; el.classList.toggle("inf", x.inf); };
+  big($("#inBig"), r.in); big($("#outBig"), r.out);
+  $("#inWhat").textContent = r.in.inf ? "infinit" : "finit"; $("#outWhat").textContent = r.out.inf ? "infinit" : "finit";
+  $("#inDesc").textContent = describe(r.in, r.out, s); $("#outDesc").textContent = describe(r.out, r.in, s);
+  document.querySelectorAll("#seg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.band === b));
+  document.querySelectorAll("[data-center]").forEach(x => x.setAttribute("aria-pressed", +x.dataset.center === L));
+  const noted = new Set(notesFor(id).filter(n => n.L === L).map(n => n.b));
+  document.querySelectorAll("[data-dot]").forEach(d => d.classList.toggle("on", noted.has(d.dataset.dot)));
+  $("#note").textContent = noted.has(b) ? "Notat ✓ · notează din nou" : "Notează în fișă";
+}
+
+/* ================= screen: worksheet ================= */
+function renderSheet() {
+  const anyNotes = Object.keys(S.notes).length > 0;
+  const allAns = SEQ.every(s => S.answers[s.id].A && S.answers[s.id].B);
+  app.innerHTML = `
+  <div class="stack" style="gap:6px">
+    <span class="eyebrow">Fișa de lucru</span>
+    <h2>Ce ai notat</h2>
+    <p class="muted small">Pentru fiecare punct central: câte puncte sunt în bandă și câte afară, la fiecare lățime. Apoi alege limita după A și după B.</p>
+  </div>
+  ${SEQ.map(s => sheetCard(s)).join("")}
+  <div class="row">
+    <button class="btn ghost" id="checkBtn" ${allAns ? "" : "disabled"}>${S.check ? "Ascunde verificarea" : "Verifică răspunsurile"}</button>
+  </div>
+  ${allAns ? "" : `<p class="small muted" style="margin-top:-8px">Verificarea se deblochează după ce alegi limita după A și după B la toate cele 4 șiruri.</p>`}
+  <div class="row" id="resetRow">${anyNotes || allAns ? `<button class="btn ghost small" id="resetAsk">Golește fișa</button>` : ""}</div>`;
+}
+function sheetCard(s) {
+  const notes = notesFor(s.id);
+  const Ls = [...new Set(notes.map(n => n.L))].sort((a, b) => b - a);
+  const cell = (L, b) => {
+    const n = S.notes[`${s.id}|${L}|${b}`];
+    if (!n) return `<td class="empty">–</td><td class="empty">–</td>`;
+    const v = (inf, c) => inf ? '<span class="inf">∞</span>' : c;
+    return `<td class="i">${v(n.inInf, n.inC)}</td><td class="o">${v(n.outInf, n.outC)}</td>`;
+  };
+  const ans = S.answers[s.id];
+  const chk = k => {
+    if (!S.check || !ans[k]) return "";
+    return ans[k] === s[k] ? `<span class="check ok">✓</span>` : `<span class="check no">✗ corect: ${s[k]}</span>`;
+  };
+  return `<section class="ws">
+    <div class="ws-head"><h3>Șirul ${s.roman}</h3><button class="btn ghost small" data-go="sir-${s.id}">Deschide</button></div>
+    <div class="fx math" style="font-size:.95rem;color:var(--plum);overflow-x:auto">${s.fx}</div>
+    ${Ls.length ? `<div class="tbl-wrap"><table>
+      <thead><tr><th rowspan="2" style="text-align:left;padding-left:6px">L</th>${BANDS.map(b => `<th colspan="2">${b.label}</th>`).join("")}</tr>
+      <tr>${BANDS.map(() => `<th>în</th><th>afară</th>`).join("")}</tr></thead>
+      <tbody>${Ls.map(L => `<tr><td class="L">${fmt(L)}</td>${BANDS.map(b => cell(L, b.k)).join("")}</tr>`).join("")}</tbody>
+    </table></div>` : `<p class="empty-ws">Nimic notat încă. Deschide șirul, pune banda pe un punct central și apasă <b>Notează în fișă</b> pentru fiecare lățime.</p>`}
+    <div class="ans">
+      ${["A", "B"].map(k => `<span class="q">După ${k}, L =</span><div class="opts">${s.opts.map(o => `<button class="chip" data-ans="${s.id}|${k}|${esc(o)}" aria-pressed="${ans[k] === o}">${o}</button>`).join("")} ${chk(k)}</div>`).join("")}
+    </div>
+  </section>`;
+}
+
+/* ================= screen: vote ================= */
+const DEF = {
+  A: { t: "Numărăm înăuntru", d: "L este limita dacă orice bandă în jurul lui L acoperă o infinitate de puncte." },
+  B: { t: "Numărăm afară", d: "L este limita dacă orice bandă în jurul lui L lasă afară doar un număr finit de puncte." },
+};
+function verdictHTML() {
+  const outN = [1, 2, 4, 6], inN = [3, 5];
+  return `<div class="verdict">
+    <h3>Definiția corectă este B</h3>
+    <p>B este echivalentă cu definiția ε–N. Dacă doar finit de mulți termeni sunt afară, există un <b>ultim</b> termen afară; de la rangul următor, <i class="v">N</i>, <b>toți</b> termenii sunt în bandă.</p>
+    <div class="nline" aria-label="Termenii 1 până la 13: 1, 2, 4, 6 afară; de la 7 toți în bandă">
+      ${Array.from({ length: 13 }, (_, k) => { const n = k + 1; return `<span class="${outN.includes(n) ? "o" : inN.includes(n) || n >= 7 ? "i" : "m"}">${n}</span>`; }).join("")}<b>…</b>
+    </div>
+    <p class="small">Aici <i class="v">N</i> = 7. <span class="bad">A</span> descrie un <b>punct de acumulare</b>: la șirurile II și IV dă două „limite”, deși șirurile nu au limită.</p>
+  </div>`;
+}
+function renderVote() {
+  app.innerHTML = `
+  <div class="stack" style="gap:6px">
+    <span class="eyebrow">Pasul 3 · alegem</span>
+    <h2>Care enunț descrie limita?</h2>
+    <p class="muted small">Doi „studenți ipotetici” propun aceste definiții. Gândește-te la șirurile din fișă, mai ales la II și IV.</p>
+  </div>
+  <div class="defs">
+    ${["A", "B"].map(k => `<button class="def" data-vote="${k}" aria-pressed="${S.vote === k}"><span class="letter">${k}</span><span class="t">${DEF[k].t}</span><span class="d">${DEF[k].d}</span></button>`).join("")}
+  </div>
+  <label class="stack" style="gap:6px" for="why"><span class="label">De ce? (opțional)</span>
+    <textarea id="why" placeholder="De exemplu: la șirul II, definiția A ar da două limite…">${esc(S.why)}</textarea></label>
+  ${S.vote ? `<div class="voted"><span>Votul tău: <b>definiția ${S.vote}</b>. Arată-l profesorului sau ridică mâna.</span></div>` : `<p class="small muted">Atinge o definiție pentru a vota.</p>`}
+  <div class="stack">
+    <h3>Întrebări pentru discuție</h3>
+    <div class="qs">
+      <div class="qcard"><span class="n">1</span><span>Poate un șir să aibă <b>două limite</b>? Ce spune definiția A despre șirul II?</span></div>
+      <div class="qcard"><span class="n">2</span><span>La șirul III, jumătate dintre termeni sunt <b>chiar pe linia roșie</b>. Mai este 0 limita șirului?</span></div>
+      <div class="qcard"><span class="n">3</span><span>Dacă o infinitate de puncte sunt <b>înăuntru</b>, rezultă că doar finit de multe sunt <b>afară</b>?</span></div>
+    </div>
+  </div>
+  ${S.verdict ? verdictHTML() : `<button class="btn ghost" id="verdictBtn">Arată răspunsul (după discuție)</button>`}`;
+}
+
+/* ================= screen: class ================= */
+function renderClass() {
+  const { A, B } = S.tally, T = A + B, pa = T ? Math.round(A * 100 / T) : 0, pb = T ? 100 - pa : 0;
+  app.innerHTML = `
+  <div class="stack" style="gap:6px">
+    <span class="eyebrow">Ecranul profesorului</span>
+    <h2>Voturile clasei</h2>
+    <p class="muted small">Numărați voturile (mâini ridicate sau telefoane arătate) și proiectați rezultatul.</p>
+  </div>
+  <div class="tally">
+    ${["A", "B"].map(k => `<div class="tcard"><span class="k">Definiția ${k}</span><span class="num">${S.tally[k]}</span>
+      <div class="pm"><button data-tally="${k}|-1" aria-label="Scade un vot pentru ${k}">−</button><button class="plus" data-tally="${k}|1" aria-label="Adaugă un vot pentru ${k}">+</button></div></div>`).join("")}
+  </div>
+  <div class="stack" style="gap:6px">
+    <div class="bar" role="img" aria-label="A ${pa}%, B ${pb}%"><span class="a" style="width:${T ? pa : 0}%"></span><span class="b" style="width:${T ? pb : 0}%"></span></div>
+    <div class="legend"><span>A · ${pa}%</span><span>${T} ${T === 1 ? "vot" : "voturi"}</span><span>B · ${pb}%</span></div>
+  </div>
+  <div class="row" id="tallyReset">${T ? `<button class="btn ghost small" id="tallyAsk">Resetează voturile</button>` : ""}</div>
+  <section class="ws">
+    <div class="ws-head"><h3>Să comparăm rezultatele</h3><button class="btn ghost small" id="cmpBtn">${S.cmp ? "Ascunde" : "Arată"}</button></div>
+    <div class="tbl-wrap"><table class="cmp">
+      <thead><tr><th style="text-align:left">Șirul</th><th>Punct central</th><th>În bandă</th><th>Afară</th><th>A ⇒ L</th><th>B ⇒ L</th></tr></thead>
+      <tbody>${SEQ.map(s => { const hl = s.A !== s.B; const h = v => S.cmp ? v : "?"; return `<tr><td style="text-align:left" class="${hl && S.cmp ? "hl" : ""}"><b>${s.roman}</b></td><td>${s.centers.map(fmt).join(" / ")}</td>
+        <td class="i">${h("infinit")}</td><td class="${hl ? "o" : "i"}">${h(hl ? "infinit" : "finit")}</td><td class="${hl && S.cmp ? "hl" : ""}">${h(s.A)}</td><td class="${hl && S.cmp ? "hl" : ""}">${h(s.B)}</td></tr>`; }).join("")}</tbody>
+    </table></div>
+    ${S.cmp ? `<p class="small muted">La I și III, A și B coincid. La II și IV nu: după A există două „limite”, după B niciuna.</p>` : ""}
+  </section>
+  ${S.verdict ? verdictHTML() : `<button class="btn" id="verdictBtn">Arată verdictul</button>`}`;
+}
+
+/* ================= events ================= */
+app.addEventListener("click", ev => {
+  const t = ev.target.closest("button"); if (!t) return;
+  const d = t.dataset;
+  if (d.go) return go(d.go);
+  if (d.band) { S.band[cur.s.id] = d.band; save(); return updateSeq(); }
+  if (d.center != null) { S.L[cur.s.id] = +d.center; save(); return updateSeq(); }
+  if (t.id === "note") {
+    const s = cur.s, L = S.L[s.id], b = S.band[s.id], r = cur.r;
+    S.notes[`${s.id}|${L}|${b}`] = { seq: s.id, L, b, inInf: r.in.inf, inC: r.in.c, outInf: r.out.inf, outC: r.out.c };
+    save(); updateSeq();
+    const left = BANDS.filter(x => !S.notes[`${s.id}|${L}|${x.k}`]).map(x => x.label);
+    return toast(`Notat: șirul ${s.roman}, L = ${fmt(L)}, banda de ${b} cm` + (left.length ? ` · mai ai ${left.join(", ")}` : " · toate benzile ✓"));
+  }
+  if (d.ans) {
+    const [id, k, o] = d.ans.split("|");
+    S.answers[id][k] = S.answers[id][k] === o ? undefined : o; save();
+    const y = window.scrollY; renderSheet(); window.scrollTo(0, y); return;
+  }
+  if (t.id === "checkBtn") { S.check = !S.check; save(); const y = window.scrollY; renderSheet(); window.scrollTo(0, y); return; }
+  if (t.id === "resetAsk") {
+    $("#resetRow").innerHTML = `<div class="confirm">Ștergi toate notițele și răspunsurile din fișă? <button class="btn small" id="resetYes">Da, golește</button><button class="btn ghost small" id="resetNo">Renunță</button></div>`; return;
+  }
+  if (t.id === "resetYes") { Object.assign(S, { notes: {}, answers: { 1: {}, 2: {}, 3: {}, 4: {} }, check: false }); save(); toast("Fișa a fost golită"); return renderSheet(); }
+  if (t.id === "resetNo") return renderSheet();
+  if (d.vote) { S.vote = d.vote; save(); toast(`Ai votat definiția ${d.vote}`); const y = window.scrollY; renderVote(); window.scrollTo(0, y); return; }
+  if (t.id === "verdictBtn") { S.verdict = true; save(); const y = window.scrollY; route() === "vot" ? renderVote() : renderClass(); window.scrollTo(0, y); return; }
+  if (d.tally) { const [k, n] = d.tally.split("|"); S.tally[k] = Math.max(0, S.tally[k] + +n); save(); const y = window.scrollY; renderClass(); window.scrollTo(0, y); return; }
+  if (t.id === "tallyAsk") { $("#tallyReset").innerHTML = `<div class="confirm">Pui voturile la zero? <button class="btn small" id="tallyYes">Da</button><button class="btn ghost small" id="tallyNo">Renunță</button></div>`; return; }
+  if (t.id === "tallyYes") { S.tally = { A: 0, B: 0 }; S.verdict = false; S.cmp = false; save(); return renderClass(); }
+  if (t.id === "tallyNo") return renderClass();
+  if (t.id === "cmpBtn") { S.cmp = !S.cmp; save(); const y = window.scrollY; renderClass(); window.scrollTo(0, y); return; }
+});
+app.addEventListener("input", ev => { if (ev.target.id === "why") { S.why = ev.target.value; save(); } });
+
+render();
+})();
+</script>
+
+</html>
