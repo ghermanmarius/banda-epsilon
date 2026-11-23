@@ -98,9 +98,10 @@ button:focus-visible, canvas:focus-visible, input:focus-visible { outline: 3px s
 .wave .dots i.now { background: var(--rose); }
 .wave .lab { font-size: 15px; font-weight: 600; }
 .wave .eps { font-size: 14px; color: var(--muted); margin-left: auto; font-variant-numeric: tabular-nums; }
-.todo { background: var(--accent-soft); border-radius: 16px; padding: 0 14px; font-size: 15px; font-weight: 500; line-height: 1.3; height: 60px; box-sizing: border-box;
+.todo { background: var(--accent-soft); border-radius: 14px; padding: 0 14px; font-size: 15px; font-weight: 500; line-height: 1.3; height: 40px; box-sizing: border-box;
   display: flex; align-items: center; overflow: hidden; }
 .todo.warn { background: var(--gold-soft); }
+.todo:empty { background: transparent; }
 .formula { margin: -4px 0 0; font-size: 21px; line-height: 1.3; color: var(--plum); }
 .canvasWrap { position: relative; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; touch-action: none; user-select: none; -webkit-user-select: none; }
 canvas { display: block; width: 100%; touch-action: none; cursor: grab; }
@@ -496,10 +497,9 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
         <div class="val"><span>Lățimea benzii</span><output id="oEv" class="big"></output></div>
       </div>
       ${mode === "lab" ? "" : `<div class="ctl"><label class="lbl" for="shr"><span>Îngustează sau lățește banda</span></label>
-        <input type="range" id="shr" min="0" max="1" step="0.005" value="${G.shrink}" list="shrMid" aria-describedby="shrNote">
+        <input type="range" id="shr" min="0" max="1" step="0.005" value="${G.shrink}" list="shrMid">
         <datalist id="shrMid"><option value="0.5"></option></datalist>
-        <div class="rangeEnds" aria-hidden="true"><span>÷ 100</span><span class="mid">banda de start</span><span>× 4</span></div>
-        <small class="muted" id="shrNote">La limita adevărată, becul B rămâne aprins oricât de îngustă e banda.</small></div>`}
+        <div class="rangeEnds" aria-hidden="true"><span>÷ 100</span><span class="mid">banda de start</span><span>× 4</span></div></div>`}
 
       ${mode === "lab" ? `<div class="ctl"><label class="lbl" for="labE"><span>Lățimea benzii, <span class="m">ε</span> (ca parte din înălțime)</span> <output id="oE"></output></label><input type="range" id="labE" min="0.005" max="0.3" step="0.005" value="${G.labEps}"></div>` : ""}`;
     const canNo = (mode === "level" && noLimitUnlocked()) || mode === "expert";
@@ -628,11 +628,11 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
     if (G.tapK) { const v = L.a(G.tapK); $("info").innerHTML = `<b>a${sub(G.tapK)} = ${fmt(v, 4)}</b> · ${Math.abs(v - G.Lc) < eps ? "în bandă" : "afară"}`; }
     else $("info").innerHTML = `Din aceștia: <b>${nIn}</b> în bandă · <b>${nOut}</b> afară`;
     let t, cls = "";
-    if (G.mode === "expert") t = G.moved ? "Ești sigur? Apasă „Verifică” sau „Nu are limită”." : "Fără becuri: trage banda unde crezi că e limita.";
-    else if (!G.moved && G.mode !== "lab") t = "Trage banda unde crezi că e limita, apoi apasă „Verifică”.";
-    else if (st.B) t = "B e aprins. Îngustează banda: rămâne aprins?";
-    else if (st.A) { t = "Doar A e aprins: și afară rămân termeni la nesfârșit."; cls = "warn"; }
-    else t = "Niciun bec aprins. Mută banda.";
+    if (G.mode === "expert") t = G.moved ? "" : "Trage banda pe limită.";
+    else if (!G.moved && G.mode !== "lab") t = "Trage banda pe limită.";
+    else if (st.B) t = "Îngustează banda.";
+    else if (st.A) { t = "Afară rămân mereu termeni."; cls = "warn"; }
+    else t = "";
     const td = $("todo"); td.textContent = t; td.className = "todo " + cls;
   }
 
@@ -685,7 +685,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
       const p = dur ? Math.min(1, (now - t0) / dur) : 1, e = 1 - Math.pow(1 - p, 2);
       G.animEps = from * Math.pow(to / from, e);
       draw();
-      $("todo").textContent = `Verific: îngustez banda până la ε = ${fmt(G.animEps, G.animEps < 0.01 ? 5 : 3)}…`; $("todo").className = "todo";
+      $("todo").textContent = `Verific… ε = ${fmt(G.animEps, G.animEps < 0.01 ? 5 : 3)}`; $("todo").className = "todo";
       if (p < 1) requestAnimationFrame(step); else setTimeout(done, 350);
     };
     requestAnimationFrame(step);
@@ -750,7 +750,7 @@ input[type=range] { width: 100%; accent-color: var(--accent); }
         const p = dur ? Math.min(1, (now - t0) / dur) : 1;
         G.Lc = L.lo + span(L) * (0.04 + 0.92 * p);
         draw();
-        $("todo").textContent = "Reluare: oriunde ar sta banda, becul B rămâne stins.";
+        $("todo").textContent = "Becul B rămâne stins oriunde.";
         if (p < 1) requestAnimationFrame(step); else setTimeout(winLevel, 500);
       };
       return requestAnimationFrame(step);
